@@ -3,6 +3,8 @@ const express = require("express");
 const router = express.Router();
 const contactController = require("../controllers/contactController");
 
-router.post("/contact", contactController.addContact);
+router.post("/submitcontactform", contactController.addContact);
+router.get("/submission/:id",contactController.getcontact);
+
 
 module.exports = router;

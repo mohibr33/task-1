@@ -28,7 +28,19 @@ const addContact = (contactData, callback) => {
     callback(null, result); 
   });
 };
-
+const getcontact = (id, callback) => {
+  const query = `SELECT * FROM form WHERE id = ?`;  
+  connection.query(query, [id], (err, result) => { 
+    if (err) {
+      return callback(err, null);
+    }
+    if (result.length === 0) {  
+      return callback(new Error("Contact not found"), null); 
+    }
+    callback(null, result[0]); 
+  });
+};
 module.exports = {
   addContact,
+  getcontact,
 };

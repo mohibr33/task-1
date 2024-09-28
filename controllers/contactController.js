@@ -15,6 +15,18 @@ const addContact = (req, res) => {
   });
 };
 
+const getcontact = (req, res) => {
+  const { id } = req.params; 
+
+  contactModel.getcontact(id, (err, contact) => {
+    if (err) {
+      return res.status(404).send("Contact not found");
+    }
+    return res.status(200).json(contact); 
+  });
+};
+
 module.exports = {
   addContact,
+  getcontact
 };
