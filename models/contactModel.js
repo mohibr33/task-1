@@ -12,6 +12,7 @@ class Contact {
     }
   }
 }
+//create
 const addContact = (contactData, callback) => {
   const contact = new Contact(contactData.name, contactData.email, contactData.message); //instance
   
@@ -28,6 +29,7 @@ const addContact = (contactData, callback) => {
     callback(null, result); 
   });
 };
+//read
 const getcontact = (id, callback) => {
   const query = `SELECT * FROM form WHERE id = ?`;  
   connection.query(query, [id], (err, result) => { 
@@ -40,7 +42,43 @@ const getcontact = (id, callback) => {
     callback(null, result[0]); 
   });
 };
+//delete
+const getdelete=(id,callback)=>{
+  const query = `DELETE FROM form WHERE id= ?`;
+  connection.query(query,[id],(err,result)=>{
+    if(err){
+      return callback(err,null);
+    }
+    if(result.affectedRows===0){
+      return callback(new Error("Contact not found for deletion",null))
+    }
+    callback(null,result)
+  })
+}
+const updateContact = (id, contactData, callback) => {
+  const contact = new Contact(contactData.name, contactData.email, contactData.message);
+
+  try {
+    contact.check();
+  } catch (error) {
+    return callback(error, null);
+  }
+
+  const query = `UPDATE form SET name = ?, email = ?, message = ? WHERE id = ?`;
+  connection.query(query, [contact.name, contact.email, contact.message, id], (err, result) => {
+    if (err) {
+      return callback(err, null);
+    }
+    if (result.affectedRows === 0) {
+      return callback(new Error("Contact not found for update"), null);
+    }
+    callback(null, result);
+  });
+};
 module.exports = {
   addContact,
   getcontact,
+  getdelete,
+  updateContact,
+
 };

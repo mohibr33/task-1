@@ -1,4 +1,3 @@
-// app.js
 const express = require("express");
 const contactRoutes = require("./routes/contactRoutes");
 const app = express();
