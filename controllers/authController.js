@@ -1,22 +1,34 @@
 const connection = require("../db"); 
 const jwt = require('jsonwebtoken');
-const { generateToken } = require('../utils/jwt');
+const { generateToken } = require('../utils/jwt'); 
 
-const signup=(req,res)=>{
-    const {email,password}=req.body;
-    if(!email || !password){
-        return res.status(400).json("Email and password are required")
+const signup = (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json("Email and password are required");
     }
-    const query=`insert into users (email,password) values(?,?)`;
-    connection.query(query,[email,password],(err,result)=>{
-     if(err){
-        return res.status(500).json("Server Error 500");
-     }
-     else {
-        return res.status(200).json("User has successfully signedup")
-     }   
-    })
-}
+
+    const query = `INSERT INTO users (email, password) VALUES (?, ?)`;
+    connection.query(query, [email, password], (err, result) => {
+        if (err) {
+            return res.status(500).json("Server Error 500");
+        } else {
+            const User = {
+                id: result.insertId,
+                email: email,
+            };
+
+            const token = generateToken(User); 
+
+            // Respond with the token and success message
+            return res.status(200).json({
+                message: "User has successfully signed up",
+                token: token 
+            });
+        }   
+    });
+};
 const login = (req, res) => {
     const { email, password } = req.body;
 
@@ -34,14 +46,11 @@ const login = (req, res) => {
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        const user = result[0];
-        const token = generateToken(user); //yahan sai jon user fetch kia hamne ham wo generate token mei jo function banaya hai wahn pass krein hai 
-
-        res.status(200).json({ message: "Login successful", token });
+        res.status(200).json({ message: "Login successful" });
     });
 };
 
 module.exports = {
-     signup, 
-     login, 
-    };
+    signup, 
+    login
+};
